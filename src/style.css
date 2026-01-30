@@ -4,6 +4,19 @@
 
 @layer utilities {
     .text-shadow {
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Animation Utility Classes */
+    .fade-in-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        will-change: opacity, visibility;
+    }
+
+    .fade-in-section.is-visible {
+        opacity: 1;
+        transform: none;
     }
 }
