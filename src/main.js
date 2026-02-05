@@ -2,7 +2,7 @@ import './style.css'
 
 // Configuration from environment variables
 const API_URL = import.meta.env.VITE_API_URL || '/api/submit';
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeBQWEsAAAABBeExhvvaMUjA_m1ycEkgriMKG1';
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LcyMmEsAAAAAJgYFByDy9TaBVloslKj-dufEZYV';
 
 // Animation Observer
 document.addEventListener('DOMContentLoaded', () => {

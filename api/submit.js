@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const PROJECT_ID = 'project-1770249920629';
-const SITE_KEY = '6LeBQWEsAAAABBeExhvvaMUjA_m1ycEkgriMKG1';
+const SITE_KEY = '6LcyMmEsAAAAAJgYFByDy9TaBVloslKj-dufEZYV';
 
 export default async function handler(req, res) {
     // Only allow POST requests
