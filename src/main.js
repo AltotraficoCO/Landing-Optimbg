@@ -1,5 +1,12 @@
 import './style.css'
 
+// Configuration from environment variables
+const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL || '';
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
+
+// Store reCAPTCHA widget IDs for multiple forms
+const recaptchaWidgets = new Map();
+
 // Animation Observer
 document.addEventListener('DOMContentLoaded', () => {
     const observerOptions = {
@@ -22,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(section);
     });
 
+    // Initialize reCAPTCHA widgets for each form
+    initRecaptchaWidgets();
+
     // Form Handler - Select all forms with the class
     const forms = document.querySelectorAll('.js-contact-form');
     forms.forEach(form => {
@@ -29,43 +39,93 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+/**
+ * Initialize reCAPTCHA widgets for each form
+ * This handles multiple reCAPTCHA instances on the same page
+ */
+function initRecaptchaWidgets() {
+    // Wait for grecaptcha to be ready
+    if (typeof grecaptcha === 'undefined' || !grecaptcha.render) {
+        // If grecaptcha is not ready, wait and retry
+        setTimeout(initRecaptchaWidgets, 100);
+        return;
+    }
+
+    const recaptchaContainers = document.querySelectorAll('.g-recaptcha');
+    recaptchaContainers.forEach((container, index) => {
+        // Skip if already rendered
+        if (container.hasChildNodes()) {
+            return;
+        }
+
+        // Create unique ID for the container
+        const containerId = `recaptcha-widget-${index}`;
+        container.id = containerId;
+
+        // Render the widget and store its ID
+        try {
+            const widgetId = grecaptcha.render(containerId, {
+                'sitekey': RECAPTCHA_SITE_KEY
+            });
+
+            // Associate widget ID with the parent form
+            const form = container.closest('form');
+            if (form) {
+                recaptchaWidgets.set(form, widgetId);
+            }
+        } catch (error) {
+            console.error('Error rendering reCAPTCHA:', error);
+        }
+    });
+}
+
 async function handleFormSubmit(e) {
     e.preventDefault();
-    e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitBtn.textContent; // Preserve original text
 
     // Clear previous status if it exists
-    const statusDiv = e.target.querySelector('.form-status');
+    const statusDiv = form.querySelector('.form-status');
     if (statusDiv) {
         statusDiv.textContent = '';
         statusDiv.classList.add('hidden');
     }
 
     // 1. Validate Email (Scoped to the current form)
-    const emailInput = e.target.querySelector('input[type="email"]');
+    const emailInput = form.querySelector('input[type="email"]');
     const email = emailInput ? emailInput.value : '';
 
     // Strict email regex: ensure @ and . present, no spaces, standard structure
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
     if (!emailRegex.test(email)) {
-        showStatus(e.target, 'Please enter a valid email address.', 'text-red-600');
+        showStatus(form, 'Please enter a valid email address.', 'text-red-600');
         return;
     }
 
-    // 2. Validate reCAPTCHA
-    const recaptchaResponse = grecaptcha.getResponse();
+    // 2. Validate reCAPTCHA (using the correct widget ID for this form)
+    const widgetId = recaptchaWidgets.get(form);
+    let recaptchaResponse = '';
+
+    if (typeof grecaptcha !== 'undefined') {
+        recaptchaResponse = widgetId !== undefined
+            ? grecaptcha.getResponse(widgetId)
+            : grecaptcha.getResponse();
+    }
+
     if (!recaptchaResponse) {
-        showStatus(e.target, 'Please complete the reCAPTCHA verification.', 'text-red-600');
+        showStatus(form, 'Please complete the reCAPTCHA verification.', 'text-red-600');
         return;
     }
 
     // 3. Collect Data & UTMs
     const formData = {
-        name: e.target.querySelector('input[type="text"]').value,
-        phone: e.target.querySelector('input[type="tel"]').value,
+        name: form.querySelector('input[type="text"]').value,
+        phone: form.querySelector('input[type="tel"]').value,
         email: email,
-        project_description: e.target.querySelector('textarea')?.value || 'Not provided',
+        project_description: form.querySelector('textarea')?.value || 'Not provided',
         recaptcha_token: recaptchaResponse,
         utm_source: getQueryParam('utm_source'),
         utm_medium: getQueryParam('utm_medium'),
@@ -79,11 +139,8 @@ async function handleFormSubmit(e) {
     submitBtn.textContent = 'Sending...';
 
     // 4. Send to Webhook
-    // Placeholder URL - User needs to replace this
-    const WEBHOOK_URL = 'https://altotrafico-iav1-n8n.tmdjra.easypanel.host/webhook/35739b9e-f443-4a8f-8d75-9e32f6816b6a';
-
     try {
-        if (WEBHOOK_URL === 'YOUR_WEBHOOK_URL_HERE') {
+        if (!WEBHOOK_URL) {
             throw new Error('Webhook URL not configured');
         }
 
@@ -96,22 +153,27 @@ async function handleFormSubmit(e) {
         });
 
         if (response.ok) {
-            showStatus(e.target, 'Thanks! Your request has been sent successfully.', 'text-green-600');
-            e.target.reset();
-            grecaptcha.reset();
+            showStatus(form, 'Thanks! Your request has been sent successfully.', 'text-green-600');
+            form.reset();
+            // Reset the correct reCAPTCHA widget
+            if (typeof grecaptcha !== 'undefined' && widgetId !== undefined) {
+                grecaptcha.reset(widgetId);
+            } else if (typeof grecaptcha !== 'undefined') {
+                grecaptcha.reset();
+            }
         } else {
             throw new Error('Server error');
         }
     } catch (error) {
         if (error.message === 'Webhook URL not configured') {
-            showStatus(e.target, 'Configuration Error: Webhook URL not set', 'text-orange-600');
+            showStatus(form, 'Configuration Error: Webhook URL not set', 'text-orange-600');
         } else {
-            showStatus(e.target, 'Something went wrong. Please try again later.', 'text-red-600');
+            showStatus(form, 'Something went wrong. Please try again later.', 'text-red-600');
         }
         console.error('Submission Error:', error);
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Request';
+        submitBtn.textContent = originalButtonText; // Restore original text
     }
 }
 
