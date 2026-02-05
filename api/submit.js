@@ -30,9 +30,13 @@ export default async function handler(req, res) {
 
         // Check if verification failed or if the score is too low (bot detection)
         if (!success || score < 0.5) {
+            const errorReason = !success
+                ? `Google Error: ${googleResponse.data['error-codes']?.join(', ') || 'unknown'}`
+                : `Low Score: ${score} (threshold 0.5)`;
+
             return res.status(403).json({
                 success: false,
-                error: 'Security verification failed (Bot detected or low score)',
+                error: `Security verification failed (${errorReason})`,
                 details: googleResponse.data
             });
         }

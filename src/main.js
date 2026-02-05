@@ -77,6 +77,23 @@ async function handleFormSubmit(e) {
         return;
     }
 
+    // 2. Validate US Phone Number (10 digits)
+    const phoneInput = form.querySelector('input[type="tel"]');
+    const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+
+    // Check if it's exactly 10 digits (US Standard)
+    if (phone.length !== 10) {
+        showStatus(form, 'Please enter a valid 10-digit US phone number.', 'text-red-600');
+        return;
+    }
+
+    // 3. Validate Terms and Conditions
+    const termsCheckbox = form.querySelector('input[type="checkbox"]');
+    if (!termsCheckbox || !termsCheckbox.checked) {
+        showStatus(form, 'You must agree to the Terms & Conditions.', 'text-red-600');
+        return;
+    }
+
     // Disable button
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
@@ -91,6 +108,7 @@ async function handleFormSubmit(e) {
             phone: form.querySelector('input[type="tel"]').value,
             email: email,
             project_description: form.querySelector('textarea')?.value || 'Not provided',
+            terms_accepted: true,
             recaptcha_response: recaptchaToken,
             utm_source: getQueryParam('utm_source'),
             utm_medium: getQueryParam('utm_medium'),
