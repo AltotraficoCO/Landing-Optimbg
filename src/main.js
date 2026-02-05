@@ -116,7 +116,7 @@ async function handleFormSubmit(e) {
         // 3. Collect Data & UTMs
         const formData = {
             name: name,
-            phone: rawPhone,
+            phone: cleanPhone,
             email: email,
             project_description: form.querySelector('textarea')?.value?.trim() || 'Not provided',
             terms_accepted: true,

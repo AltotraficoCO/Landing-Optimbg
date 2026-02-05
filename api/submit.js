@@ -14,17 +14,40 @@ export default async function handler(req, res) {
         return res.status(500).json({ success: false, error: 'Config Error: Secret Key is missing in Vercel' });
     }
 
+    if (!N8N_WEBHOOK_URL) {
+        return res.status(500).json({ success: false, error: 'Config Error: Webhook URL is missing in Vercel' });
+    }
+
     if (!recaptcha_response) {
         return res.status(400).json({ success: false, error: 'reCAPTCHA token missing' });
     }
 
+    // Validate required form fields
+    const { name, email, phone } = formData;
+
+    if (!name || typeof name !== 'string' || !name.trim()) {
+        return res.status(400).json({ success: false, error: 'Name is required' });
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!email || !emailRegex.test(email)) {
+        return res.status(400).json({ success: false, error: 'A valid email is required' });
+    }
+
+    const cleanPhone = (phone || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+        return res.status(400).json({ success: false, error: 'A valid 10-digit US phone number is required' });
+    }
+
     try {
         // 1. Validate with Google reCAPTCHA v3
-        console.log('Verifying token length:', recaptcha_response.length);
+        const params = new URLSearchParams();
+        params.append('secret', SECRET_KEY);
+        params.append('response', recaptcha_response);
 
         const googleResponse = await axios.post(
             'https://www.google.com/recaptcha/api/siteverify',
-            `secret=${SECRET_KEY}&response=${recaptcha_response}`,
+            params,
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -50,13 +73,12 @@ export default async function handler(req, res) {
         }
 
         // 2. Forward the validated data to n8n
-        if (N8N_WEBHOOK_URL) {
-            await axios.post(N8N_WEBHOOK_URL, {
-                ...formData,
-                recaptcha_score: score,
-                verified_by_vercel: true
-            });
-        }
+        await axios.post(N8N_WEBHOOK_URL, {
+            ...formData,
+            phone: cleanPhone,
+            recaptcha_score: score,
+            verified_by_vercel: true
+        });
 
         // Return success message to the frontend
         return res.status(200).json({ success: true, message: 'Form submitted successfully' });
