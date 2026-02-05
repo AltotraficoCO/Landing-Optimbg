@@ -1,5 +1,5 @@
 {
-  "name": "Optim Build - Formulario con reCAPTCHA",
+  "name": "Optim Build - Formulario con reCAPTCHA v3",
   "nodes": [
     {
       "parameters": {
@@ -34,7 +34,7 @@
         },
         "options": {}
       },
-      "name": "Validar reCAPTCHA",
+      "name": "Validar reCAPTCHA v3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [450, 300]
@@ -47,10 +47,18 @@
               "value1": "={{ $json.success }}",
               "value2": true
             }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.score }}",
+              "operation": "largerEqual",
+              "value2": 0.5
+            }
           ]
-        }
+        },
+        "combineOperation": "all"
       },
-      "name": "reCAPTCHA valido",
+      "name": "reCAPTCHA valido (score >= 0.5)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [650, 300]
@@ -95,6 +103,12 @@
               "name": "utm_content",
               "value": "={{ $('Webhook').item.json.utm_content }}"
             }
+          ],
+          "number": [
+            {
+              "name": "recaptcha_score",
+              "value": "={{ $('Validar reCAPTCHA v3').item.json.score }}"
+            }
           ]
         },
         "options": {}
@@ -118,12 +132,12 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={ \"status\": \"error\", \"message\": \"Verificacion de reCAPTCHA fallida\" }",
+        "responseBody": "={ \"status\": \"error\", \"message\": \"Verificacion de seguridad fallida\" }",
         "options": {
           "responseCode": 400
         }
       },
-      "name": "Respuesta Error",
+      "name": "Respuesta Error - Bot detectado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [850, 400]
@@ -134,25 +148,25 @@
       "main": [
         [
           {
-            "node": "Validar reCAPTCHA",
+            "node": "Validar reCAPTCHA v3",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Validar reCAPTCHA": {
+    "Validar reCAPTCHA v3": {
       "main": [
         [
           {
-            "node": "reCAPTCHA valido",
+            "node": "reCAPTCHA valido (score >= 0.5)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "reCAPTCHA valido": {
+    "reCAPTCHA valido (score >= 0.5)": {
       "main": [
         [
           {
@@ -163,7 +177,7 @@
         ],
         [
           {
-            "node": "Respuesta Error",
+            "node": "Respuesta Error - Bot detectado",
             "type": "main",
             "index": 0
           }

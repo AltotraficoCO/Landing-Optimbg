@@ -2,10 +2,7 @@ import './style.css'
 
 // Configuration from environment variables
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL || '';
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
-
-// Store reCAPTCHA widget IDs for multiple forms
-const recaptchaWidgets = new Map();
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6Lf082AsAAAAAP9jEyiqt0tMDsSQG3z0zGGuiaPL';
 
 // Animation Observer
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,9 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(section);
     });
 
-    // Initialize reCAPTCHA widgets for each form
-    initRecaptchaWidgets();
-
     // Form Handler - Select all forms with the class
     const forms = document.querySelectorAll('.js-contact-form');
     forms.forEach(form => {
@@ -40,42 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Initialize reCAPTCHA widgets for each form
- * This handles multiple reCAPTCHA instances on the same page
+ * Execute reCAPTCHA v3 and get token
+ * @returns {Promise<string>} reCAPTCHA token
  */
-function initRecaptchaWidgets() {
-    // Wait for grecaptcha to be ready
-    if (typeof grecaptcha === 'undefined' || !grecaptcha.render) {
-        // If grecaptcha is not ready, wait and retry
-        setTimeout(initRecaptchaWidgets, 100);
-        return;
-    }
-
-    const recaptchaContainers = document.querySelectorAll('.g-recaptcha');
-    recaptchaContainers.forEach((container, index) => {
-        // Skip if already rendered
-        if (container.hasChildNodes()) {
+async function executeRecaptcha() {
+    return new Promise((resolve, reject) => {
+        if (typeof grecaptcha === 'undefined') {
+            reject(new Error('reCAPTCHA not loaded'));
             return;
         }
 
-        // Create unique ID for the container
-        const containerId = `recaptcha-widget-${index}`;
-        container.id = containerId;
-
-        // Render the widget and store its ID
-        try {
-            const widgetId = grecaptcha.render(containerId, {
-                'sitekey': RECAPTCHA_SITE_KEY
-            });
-
-            // Associate widget ID with the parent form
-            const form = container.closest('form');
-            if (form) {
-                recaptchaWidgets.set(form, widgetId);
-            }
-        } catch (error) {
-            console.error('Error rendering reCAPTCHA:', error);
-        }
+        grecaptcha.ready(() => {
+            grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit_form' })
+                .then(token => resolve(token))
+                .catch(err => reject(err));
+        });
     });
 }
 
@@ -84,7 +57,7 @@ async function handleFormSubmit(e) {
 
     const form = e.target;
     const submitBtn = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitBtn.textContent; // Preserve original text
+    const originalButtonText = submitBtn.textContent;
 
     // Clear previous status if it exists
     const statusDiv = form.querySelector('.form-status');
@@ -93,11 +66,10 @@ async function handleFormSubmit(e) {
         statusDiv.classList.add('hidden');
     }
 
-    // 1. Validate Email (Scoped to the current form)
+    // 1. Validate Email
     const emailInput = form.querySelector('input[type="email"]');
     const email = emailInput ? emailInput.value : '';
 
-    // Strict email regex: ensure @ and . present, no spaces, standard structure
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
     if (!emailRegex.test(email)) {
@@ -105,41 +77,29 @@ async function handleFormSubmit(e) {
         return;
     }
 
-    // 2. Validate reCAPTCHA (using the correct widget ID for this form)
-    const widgetId = recaptchaWidgets.get(form);
-    let recaptchaResponse = '';
-
-    if (typeof grecaptcha !== 'undefined') {
-        recaptchaResponse = widgetId !== undefined
-            ? grecaptcha.getResponse(widgetId)
-            : grecaptcha.getResponse();
-    }
-
-    if (!recaptchaResponse) {
-        showStatus(form, 'Please complete the reCAPTCHA verification.', 'text-red-600');
-        return;
-    }
-
-    // 3. Collect Data & UTMs
-    const formData = {
-        name: form.querySelector('input[type="text"]').value,
-        phone: form.querySelector('input[type="tel"]').value,
-        email: email,
-        project_description: form.querySelector('textarea')?.value || 'Not provided',
-        recaptcha_token: recaptchaResponse,
-        utm_source: getQueryParam('utm_source'),
-        utm_medium: getQueryParam('utm_medium'),
-        utm_campaign: getQueryParam('utm_campaign'),
-        utm_term: getQueryParam('utm_term'),
-        utm_content: getQueryParam('utm_content')
-    };
-
     // Disable button
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
 
-    // 4. Send to Webhook
     try {
+        // 2. Get reCAPTCHA v3 token
+        const recaptchaToken = await executeRecaptcha();
+
+        // 3. Collect Data & UTMs
+        const formData = {
+            name: form.querySelector('input[type="text"]').value,
+            phone: form.querySelector('input[type="tel"]').value,
+            email: email,
+            project_description: form.querySelector('textarea')?.value || 'Not provided',
+            recaptcha_token: recaptchaToken,
+            utm_source: getQueryParam('utm_source'),
+            utm_medium: getQueryParam('utm_medium'),
+            utm_campaign: getQueryParam('utm_campaign'),
+            utm_term: getQueryParam('utm_term'),
+            utm_content: getQueryParam('utm_content')
+        };
+
+        // 4. Send to Webhook
         if (!WEBHOOK_URL) {
             throw new Error('Webhook URL not configured');
         }
@@ -155,25 +115,21 @@ async function handleFormSubmit(e) {
         if (response.ok) {
             showStatus(form, 'Thanks! Your request has been sent successfully.', 'text-green-600');
             form.reset();
-            // Reset the correct reCAPTCHA widget
-            if (typeof grecaptcha !== 'undefined' && widgetId !== undefined) {
-                grecaptcha.reset(widgetId);
-            } else if (typeof grecaptcha !== 'undefined') {
-                grecaptcha.reset();
-            }
         } else {
             throw new Error('Server error');
         }
     } catch (error) {
         if (error.message === 'Webhook URL not configured') {
             showStatus(form, 'Configuration Error: Webhook URL not set', 'text-orange-600');
+        } else if (error.message === 'reCAPTCHA not loaded') {
+            showStatus(form, 'Security verification failed. Please refresh and try again.', 'text-red-600');
         } else {
             showStatus(form, 'Something went wrong. Please try again later.', 'text-red-600');
         }
         console.error('Submission Error:', error);
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = originalButtonText; // Restore original text
+        submitBtn.textContent = originalButtonText;
     }
 }
 
@@ -183,10 +139,8 @@ function getQueryParam(name) {
 }
 
 function showStatus(formElement, message, colorClass) {
-    // Find the status div specifically within or near the submitted form
     let statusDiv = formElement.querySelector('.form-status');
 
-    // If it doesn't exist, create it dynamically
     if (!statusDiv) {
         statusDiv = document.createElement('div');
         statusDiv.className = 'form-status text-center text-sm font-medium hidden mt-4';
