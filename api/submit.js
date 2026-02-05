@@ -10,6 +10,10 @@ export default async function handler(req, res) {
     const SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
     const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
+    if (!SECRET_KEY) {
+        return res.status(500).json({ success: false, error: 'Config Error: Secret Key is missing in Vercel' });
+    }
+
     if (!recaptcha_response) {
         return res.status(400).json({ success: false, error: 'reCAPTCHA token missing' });
     }

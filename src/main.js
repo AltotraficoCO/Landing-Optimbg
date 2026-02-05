@@ -112,19 +112,23 @@ async function handleFormSubmit(e) {
             body: JSON.stringify(formData)
         });
 
+        const contentType = response.headers.get("content-type");
+        const result = (contentType && contentType.includes("application/json")) ? await response.json() : {};
+
         if (response.ok) {
             showStatus(form, 'Thanks! Your request has been sent successfully.', 'text-green-600');
             form.reset();
         } else {
-            throw new Error('Server error');
+            const errorMessage = result.error || 'Server error';
+            throw new Error(errorMessage);
         }
     } catch (error) {
-        if (error.message === 'Webhook URL not configured') {
-            showStatus(form, 'Configuration Error: Webhook URL not set', 'text-orange-600');
+        if (error.message === 'API URL not configured') {
+            showStatus(form, 'Configuration Error: API URL not set', 'text-orange-600');
         } else if (error.message === 'reCAPTCHA not loaded') {
             showStatus(form, 'Security verification failed. Please refresh and try again.', 'text-red-600');
         } else {
-            showStatus(form, 'Something went wrong. Please try again later.', 'text-red-600');
+            showStatus(form, `Error: ${error.message}`, 'text-red-600');
         }
         console.error('Submission Error:', error);
     } finally {
