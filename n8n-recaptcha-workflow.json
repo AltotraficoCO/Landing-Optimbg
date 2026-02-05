@@ -1,0 +1,185 @@
+{
+  "name": "Optim Build - Formulario con reCAPTCHA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "35739b9e-f443-4a8f-8d75-9e32f6816b6a",
+        "options": {
+          "responseMode": "responseNode"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.google.com/recaptcha/api/siteverify",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "secret",
+              "value": "6Lf082AsAAAAAP49aR0YscJNR8sfF7jsR59uvTD5"
+            },
+            {
+              "name": "response",
+              "value": "={{ $json.recaptcha_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Validar reCAPTCHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "reCAPTCHA valido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "name",
+              "value": "={{ $('Webhook').item.json.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Webhook').item.json.email }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $('Webhook').item.json.phone }}"
+            },
+            {
+              "name": "project_description",
+              "value": "={{ $('Webhook').item.json.project_description }}"
+            },
+            {
+              "name": "utm_source",
+              "value": "={{ $('Webhook').item.json.utm_source }}"
+            },
+            {
+              "name": "utm_medium",
+              "value": "={{ $('Webhook').item.json.utm_medium }}"
+            },
+            {
+              "name": "utm_campaign",
+              "value": "={{ $('Webhook').item.json.utm_campaign }}"
+            },
+            {
+              "name": "utm_term",
+              "value": "={{ $('Webhook').item.json.utm_term }}"
+            },
+            {
+              "name": "utm_content",
+              "value": "={{ $('Webhook').item.json.utm_content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Preparar datos del lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"success\", \"message\": \"Lead recibido correctamente\" }",
+        "options": {}
+      },
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"error\", \"message\": \"Verificacion de reCAPTCHA fallida\" }",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validar reCAPTCHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar reCAPTCHA": {
+      "main": [
+        [
+          {
+            "node": "reCAPTCHA valido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reCAPTCHA valido": {
+      "main": [
+        [
+          {
+            "node": "Preparar datos del lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar datos del lead": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
