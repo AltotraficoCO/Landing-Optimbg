@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const PROJECT_ID = 'project-1770249920629';
+const SITE_KEY = '6LeBQWEsAAAABBeExhvvaMUjA_m1ycEkgriMKG1';
+
 export default async function handler(req, res) {
     // Only allow POST requests
     if (req.method !== 'POST') {
@@ -7,11 +10,11 @@ export default async function handler(req, res) {
     }
 
     const { recaptcha_response, ...formData } = req.body;
-    const SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY?.trim();
+    const API_KEY = process.env.RECAPTCHA_API_KEY?.trim();
     const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
-    if (!SECRET_KEY) {
-        return res.status(500).json({ success: false, error: 'Config Error: Secret Key is missing in Vercel' });
+    if (!API_KEY) {
+        return res.status(500).json({ success: false, error: 'Config Error: RECAPTCHA_API_KEY is missing in Vercel' });
     }
 
     if (!N8N_WEBHOOK_URL) {
@@ -40,35 +43,44 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 1. Validate with Google reCAPTCHA v3
-        const params = new URLSearchParams();
-        params.append('secret', SECRET_KEY);
-        params.append('response', recaptcha_response);
+        // 1. Validate with Google reCAPTCHA Enterprise
+        const assessmentUrl = `https://recaptchaenterprise.googleapis.com/v1/projects/${PROJECT_ID}/assessments?key=${API_KEY}`;
 
-        const googleResponse = await axios.post(
-            'https://www.google.com/recaptcha/api/siteverify',
-            params,
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+        const googleResponse = await axios.post(assessmentUrl, {
+            event: {
+                token: recaptcha_response,
+                expectedAction: 'submit_form',
+                siteKey: SITE_KEY
             }
-        );
+        });
 
-        const { success, score } = googleResponse.data;
+        const { tokenProperties, riskAnalysis } = googleResponse.data;
+        const score = riskAnalysis?.score ?? 0;
 
-        console.log('reCAPTCHA verification:', googleResponse.data);
+        console.log('reCAPTCHA Enterprise verification:', googleResponse.data);
 
-        // Check if verification failed or if the score is too low (bot detection)
-        if (!success || score < 0.5) {
-            const errorReason = !success
-                ? `Google Error: ${googleResponse.data['error-codes']?.join(', ') || 'unknown'}`
-                : `Low Score: ${score} (threshold 0.5)`;
-
+        // Check if token is valid
+        if (!tokenProperties?.valid) {
+            const reason = tokenProperties?.invalidReason || 'unknown';
             return res.status(403).json({
                 success: false,
-                error: `Security verification failed (${errorReason})`,
-                details: googleResponse.data
+                error: `Security verification failed (Invalid token: ${reason})`
+            });
+        }
+
+        // Check if the action matches
+        if (tokenProperties.action !== 'submit_form') {
+            return res.status(403).json({
+                success: false,
+                error: `Security verification failed (Action mismatch: ${tokenProperties.action})`
+            });
+        }
+
+        // Check if the score is too low (bot detection)
+        if (score < 0.5) {
+            return res.status(403).json({
+                success: false,
+                error: `Security verification failed (Low Score: ${score}, threshold 0.5)`
             });
         }
 
@@ -84,7 +96,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, message: 'Form submitted successfully' });
 
     } catch (error) {
-        console.error('Vercel Function Error:', error.message);
+        console.error('Vercel Function Error:', error.response?.data || error.message);
         return res.status(500).json({ success: false, error: 'Internal server error' });
     }
 }

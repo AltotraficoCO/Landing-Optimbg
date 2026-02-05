@@ -2,7 +2,7 @@ import './style.css'
 
 // Configuration from environment variables
 const API_URL = import.meta.env.VITE_API_URL || '/api/submit';
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6Lf082AsAAAAAP9jEyiqt0tMDsSQG3z0zGGuiaPL';
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeBQWEsAAAABBeExhvvaMUjA_m1ycEkgriMKG1';
 
 // Animation Observer
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,13 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function executeRecaptcha() {
     return new Promise((resolve, reject) => {
-        if (typeof grecaptcha === 'undefined') {
+        if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
             reject(new Error('reCAPTCHA not loaded'));
             return;
         }
 
-        grecaptcha.ready(() => {
-            grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit_form' })
+        grecaptcha.enterprise.ready(() => {
+            grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action: 'submit_form' })
                 .then(token => resolve(token))
                 .catch(err => reject(err));
         });
