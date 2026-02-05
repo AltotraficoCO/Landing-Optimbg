@@ -91,7 +91,7 @@ async function handleFormSubmit(e) {
             phone: form.querySelector('input[type="tel"]').value,
             email: email,
             project_description: form.querySelector('textarea')?.value || 'Not provided',
-            recaptcha_token: recaptchaToken,
+            recaptcha_response: recaptchaToken,
             utm_source: getQueryParam('utm_source'),
             utm_medium: getQueryParam('utm_medium'),
             utm_campaign: getQueryParam('utm_campaign'),

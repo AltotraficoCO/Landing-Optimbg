@@ -5,9 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "35739b9e-f443-4a8f-8d75-9e32f6816b6a",
-        "options": {
-          "responseMode": "responseNode"
-        }
+        "options": {}
       },
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
@@ -17,21 +15,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://www.google.com/recaptcha/api/siteverify",
-        "sendBody": true,
-        "contentType": "form-urlencoded",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "secret",
-              "value": "6Lf082AsAAAAAP49aR0YscJNR8sfF7jsR59uvTD5"
-            },
-            {
-              "name": "response",
-              "value": "={{ $json.recaptcha_token }}"
-            }
-          ]
-        },
+        "url": "=https://www.google.com/recaptcha/api/siteverify?secret=6Lf082AsAAAAAP49aR0YscJNR8sfF7jsR59uvTD5&response={{ $json.body.recaptcha_token }}",
         "options": {}
       },
       "name": "Validar reCAPTCHA v3",
@@ -69,39 +53,39 @@
           "string": [
             {
               "name": "name",
-              "value": "={{ $('Webhook').item.json.name }}"
+              "value": "={{ $('Webhook').item.json.body.name }}"
             },
             {
               "name": "email",
-              "value": "={{ $('Webhook').item.json.email }}"
+              "value": "={{ $('Webhook').item.json.body.email }}"
             },
             {
               "name": "phone",
-              "value": "={{ $('Webhook').item.json.phone }}"
+              "value": "={{ $('Webhook').item.json.body.phone }}"
             },
             {
               "name": "project_description",
-              "value": "={{ $('Webhook').item.json.project_description }}"
+              "value": "={{ $('Webhook').item.json.body.project_description }}"
             },
             {
               "name": "utm_source",
-              "value": "={{ $('Webhook').item.json.utm_source }}"
+              "value": "={{ $('Webhook').item.json.body.utm_source }}"
             },
             {
               "name": "utm_medium",
-              "value": "={{ $('Webhook').item.json.utm_medium }}"
+              "value": "={{ $('Webhook').item.json.body.utm_medium }}"
             },
             {
               "name": "utm_campaign",
-              "value": "={{ $('Webhook').item.json.utm_campaign }}"
+              "value": "={{ $('Webhook').item.json.body.utm_campaign }}"
             },
             {
               "name": "utm_term",
-              "value": "={{ $('Webhook').item.json.utm_term }}"
+              "value": "={{ $('Webhook').item.json.body.utm_term }}"
             },
             {
               "name": "utm_content",
-              "value": "={{ $('Webhook').item.json.utm_content }}"
+              "value": "={{ $('Webhook').item.json.body.utm_content }}"
             }
           ],
           "number": [
@@ -120,9 +104,10 @@
     },
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "={ \"status\": \"success\", \"message\": \"Lead recibido correctamente\" }",
-        "options": {}
+        "respondWith": "=",
+        "options": {
+          "responseCode": 200
+        }
       },
       "name": "Respuesta OK",
       "type": "n8n-nodes-base.respondToWebhook",
@@ -131,8 +116,7 @@
     },
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "={ \"status\": \"error\", \"message\": \"Verificacion de seguridad fallida\" }",
+        "respondWith": "=",
         "options": {
           "responseCode": 400
         }
