@@ -10,18 +10,24 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://www.google.com/recaptcha/api/siteverify?secret=6Lf082AsAAAAAP49aR0YscJNR8sfF7jsR59uvTD5&response={{ $json.body.recaptcha_token }}",
+        "url": "=https://www.google.com/recaptcha/api/siteverify?secret=6Lf082AsAAAAAP49aR0YscJNR8sfF7jsR59uvTD5&response={{ $json.body.recaptcha_response }}",
         "options": {}
       },
       "name": "Validar reCAPTCHA v3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
@@ -45,7 +51,10 @@
       "name": "reCAPTCHA valido (score >= 0.5)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
@@ -100,7 +109,10 @@
       "name": "Preparar datos del lead",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
-      "position": [850, 200]
+      "position": [
+        850,
+        200
+      ]
     },
     {
       "parameters": {
@@ -112,7 +124,10 @@
       "name": "Respuesta OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1050, 200]
+      "position": [
+        1050,
+        200
+      ]
     },
     {
       "parameters": {
@@ -124,7 +139,10 @@
       "name": "Respuesta Error - Bot detectado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [850, 400]
+      "position": [
+        850,
+        400
+      ]
     }
   ],
   "connections": {

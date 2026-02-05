@@ -1,7 +1,7 @@
 import './style.css'
 
 // Configuration from environment variables
-const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || '/api/submit';
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6Lf082AsAAAAAP9jEyiqt0tMDsSQG3z0zGGuiaPL';
 
 // Animation Observer
@@ -100,11 +100,11 @@ async function handleFormSubmit(e) {
         };
 
         // 4. Send to Webhook
-        if (!WEBHOOK_URL) {
-            throw new Error('Webhook URL not configured');
+        if (!API_URL) {
+            throw new Error('API URL not configured');
         }
 
-        const response = await fetch(WEBHOOK_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
