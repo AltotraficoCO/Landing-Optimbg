@@ -66,9 +66,18 @@ async function handleFormSubmit(e) {
         statusDiv.classList.add('hidden');
     }
 
-    // 1. Validate Email
+    // 1. Validate Form Fields
+    const nameInput = form.querySelector('input[type="text"]');
+    const name = nameInput ? nameInput.value.trim() : '';
+
     const emailInput = form.querySelector('input[type="email"]');
-    const email = emailInput ? emailInput.value : '';
+    const email = emailInput ? emailInput.value.trim() : '';
+
+    if (!name) {
+        showStatus(form, 'Please enter your full name.', 'text-red-600');
+        nameInput.focus();
+        return;
+    }
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
@@ -79,18 +88,20 @@ async function handleFormSubmit(e) {
 
     // 2. Validate US Phone Number (10 digits)
     const phoneInput = form.querySelector('input[type="tel"]');
-    const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+    const rawPhone = phoneInput ? phoneInput.value : '';
+    const cleanPhone = rawPhone.replace(/\D/g, '');
 
     // Check if it's exactly 10 digits (US Standard)
-    if (phone.length !== 10) {
-        showStatus(form, 'Please enter a valid 10-digit US phone number.', 'text-red-600');
+    if (cleanPhone.length !== 10) {
+        showStatus(form, 'Please enter a valid 10-digit US phone number (e.g. 813 555 1234).', 'text-red-600');
+        phoneInput.focus();
         return;
     }
 
     // 3. Validate Terms and Conditions
     const termsCheckbox = form.querySelector('input[type="checkbox"]');
     if (!termsCheckbox || !termsCheckbox.checked) {
-        showStatus(form, 'You must agree to the Terms & Conditions.', 'text-red-600');
+        showStatus(form, 'You must agree to the Terms & Conditions and Privacy Policy to continue.', 'text-red-600');
         return;
     }
 
@@ -104,10 +115,10 @@ async function handleFormSubmit(e) {
 
         // 3. Collect Data & UTMs
         const formData = {
-            name: form.querySelector('input[type="text"]').value,
-            phone: form.querySelector('input[type="tel"]').value,
+            name: name,
+            phone: rawPhone,
             email: email,
-            project_description: form.querySelector('textarea')?.value || 'Not provided',
+            project_description: form.querySelector('textarea')?.value?.trim() || 'Not provided',
             terms_accepted: true,
             recaptcha_response: recaptchaToken,
             utm_source: getQueryParam('utm_source'),

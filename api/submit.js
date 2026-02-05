@@ -19,9 +19,19 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 1. Validate with Google reCAPTCHA v3
+        // 1. Validate with Google reCAPTCHA v3 using standard POST parameters
+        const params = new URLSearchParams();
+        params.append('secret', SECRET_KEY);
+        params.append('response', recaptcha_response);
+
         const googleResponse = await axios.post(
-            `https://www.google.com/recaptcha/api/siteverify?secret=${SECRET_KEY}&response=${recaptcha_response}`
+            'https://www.google.com/recaptcha/api/siteverify',
+            params,
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
         );
 
         const { success, score } = googleResponse.data;
