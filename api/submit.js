@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
 
     const { recaptcha_response, ...formData } = req.body;
-    const SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+    const SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY?.trim();
     const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
     if (!SECRET_KEY) {
@@ -19,14 +19,12 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 1. Validate with Google reCAPTCHA v3 using standard POST parameters
-        const params = new URLSearchParams();
-        params.append('secret', SECRET_KEY);
-        params.append('response', recaptcha_response);
+        // 1. Validate with Google reCAPTCHA v3
+        console.log('Verifying token length:', recaptcha_response.length);
 
         const googleResponse = await axios.post(
             'https://www.google.com/recaptcha/api/siteverify',
-            params,
+            `secret=${SECRET_KEY}&response=${recaptcha_response}`,
             {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
