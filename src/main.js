@@ -153,11 +153,11 @@ async function handleFormSubmit(e) {
         }
     } catch (error) {
         if (error.message === 'API URL not configured') {
-            showStatus(form, 'Configuration Error: API URL not set', 'text-orange-600');
+            showStatus(form, 'Configuration Error: API URL not set.', 'text-orange-600');
         } else if (error.message === 'reCAPTCHA not loaded') {
             showStatus(form, 'Security verification failed. Please refresh and try again.', 'text-red-600');
         } else {
-            showStatus(form, `Error: ${error.message}`, 'text-red-600');
+            showStatus(form, 'Something went wrong. Please try again or call us directly.', 'text-red-600');
         }
         console.error('Submission Error:', error);
     } finally {

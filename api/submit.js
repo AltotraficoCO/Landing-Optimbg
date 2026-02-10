@@ -14,11 +14,13 @@ export default async function handler(req, res) {
     const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
     if (!API_KEY) {
-        return res.status(500).json({ success: false, error: 'Config Error: RECAPTCHA_API_KEY is missing in Vercel' });
+        console.error('Config Error: RECAPTCHA_API_KEY is missing');
+        return res.status(500).json({ success: false, error: 'Server configuration error. Please try again later.' });
     }
 
     if (!N8N_WEBHOOK_URL) {
-        return res.status(500).json({ success: false, error: 'Config Error: Webhook URL is missing in Vercel' });
+        console.error('Config Error: N8N_WEBHOOK_URL is missing');
+        return res.status(500).json({ success: false, error: 'Server configuration error. Please try again later.' });
     }
 
     if (!recaptcha_response) {
@@ -61,26 +63,28 @@ export default async function handler(req, res) {
 
         // Check if token is valid
         if (!tokenProperties?.valid) {
-            const reason = tokenProperties?.invalidReason || 'unknown';
+            console.error('reCAPTCHA invalid token:', tokenProperties?.invalidReason || 'unknown');
             return res.status(403).json({
                 success: false,
-                error: `Security verification failed (Invalid token: ${reason})`
+                error: 'Security verification failed. Please refresh and try again.'
             });
         }
 
         // Check if the action matches
         if (tokenProperties.action !== 'submit_form') {
+            console.error('reCAPTCHA action mismatch:', tokenProperties.action);
             return res.status(403).json({
                 success: false,
-                error: `Security verification failed (Action mismatch: ${tokenProperties.action})`
+                error: 'Security verification failed. Please refresh and try again.'
             });
         }
 
         // Check if the score is too low (bot detection)
         if (score < 0.5) {
+            console.error('reCAPTCHA low score:', score);
             return res.status(403).json({
                 success: false,
-                error: `Security verification failed (Low Score: ${score}, threshold 0.5)`
+                error: 'Security verification failed. Please refresh and try again.'
             });
         }
 

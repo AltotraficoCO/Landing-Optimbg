@@ -10,4 +10,6 @@ module.exports = defineConfig({
       },
     },
   },
+  // Serve /thank-you instead of /thank-you.html
+  appType: 'mpa',
 })
