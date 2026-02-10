@@ -119,6 +119,7 @@ async function handleFormSubmit(e) {
             phone: cleanPhone,
             email: email,
             project_description: form.querySelector('textarea')?.value?.trim() || 'Not provided',
+            b_phone: form.querySelector('input[name="b_phone"]')?.value || '', // Honeypot
             terms_accepted: true,
             recaptcha_response: recaptchaToken,
             utm_source: getQueryParam('utm_source'),
@@ -137,6 +138,7 @@ async function handleFormSubmit(e) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             },
             body: JSON.stringify(formData)
         });

@@ -16,7 +16,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Optim Build Group - High Quality Construction &amp; Renovations</title>
-    <meta name="description" content="Expert building and renovation services in Tampa, FL. Licensed &amp; insured professionals. Get your free project consultation today. Call 813-400-1617." />
+    <meta name="description"
+        content="Expert building and renovation services in Tampa, FL. Licensed &amp; insured professionals. Get your free project consultation today. Call 813-400-1617." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
@@ -24,7 +25,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <script async src="https://www.google.com/recaptcha/enterprise.js?render=6LcyMmEsAAAAAJgYFByDy9TaBVloslKj-dufEZYV"></script>
+    <script async
+        src="https://www.google.com/recaptcha/enterprise.js?render=6LcyMmEsAAAAAJgYFByDy9TaBVloslKj-dufEZYV"></script>
 </head>
 
 <body class="bg-white antialiased">
@@ -86,27 +88,33 @@
                         </h3>
                         <p class="text-slate-500 mb-6 font-medium text-sm lg:text-base">Enter your details and we'll
                             contact you within 24 hours.</p>
-                        <form action="#" class="space-y-4 js-contact-form">
+                        <form action="#" class="space-y-4 js-contact-form" id="hero-contact-form">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1 tracking-wide">Full
                                     Name</label>
                                 <input
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy"
-                                    name="name" placeholder="John Smith" required="" type="text" />
+                                    name="name" placeholder="John Smith" required="" type="text" autocomplete="name" />
+                            </div>
+                            <div style="display:none;">
+                                <label>Leave this field empty</label>
+                                <input type="text" name="b_phone" tabindex="-1" autocomplete="off">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1 tracking-wide">Phone
                                     Number</label>
                                 <input
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy"
-                                    name="phone" placeholder="813 555 1234" required="" type="tel" id="hero-phone" />
+                                    name="phone" placeholder="813 555 1234" required="" type="tel" id="hero-phone"
+                                    autocomplete="tel" />
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1 tracking-wide">Email
                                     Address</label>
                                 <input
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy"
-                                    name="email" placeholder="john@example.com" required="" type="email" />
+                                    name="email" placeholder="john@example.com" required="" type="email"
+                                    autocomplete="email" />
                             </div>
                             <div>
                                 <label
@@ -114,7 +122,8 @@
                                     Details</label>
                                 <textarea
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy min-h-[80px]"
-                                    name="project_description" placeholder="Tell us about your project..." required=""></textarea>
+                                    name="project_description" placeholder="Tell us about your project..."
+                                    required=""></textarea>
                             </div>
                             <div class="flex items-start gap-3 py-2">
                                 <input type="checkbox" id="hero-terms" required
@@ -252,34 +261,41 @@
                 <div class="bg-slate-50 rounded-3xl p-10 border border-slate-100 text-left max-w-lg mx-auto">
                     <p class="text-center font-bold text-navy text-lg mb-8 uppercase tracking-widest">Or Request a
                         Callback</p>
-                    <form class="space-y-5 js-contact-form">
+                    <form class="space-y-5 js-contact-form" id="footer-contact-form">
                         <div>
                             <label class="block text-sm font-bold text-slate-700 uppercase mb-2 tracking-wide">Full
                                 Name</label>
                             <input
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg"
-                                name="name" placeholder="John Smith" required="" type="text" />
+                                name="name" placeholder="John Smith" required="" type="text" autocomplete="name" />
+                        </div>
+                        <div style="display:none;">
+                            <label>Leave this field empty</label>
+                            <input type="text" name="b_phone" tabindex="-1" autocomplete="off">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 uppercase mb-2 tracking-wide">Phone
                                 Number</label>
                             <input
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg"
-                                name="phone" placeholder="813 555 1234" required="" type="tel" id="footer-phone" />
+                                name="phone" placeholder="813 555 1234" required="" type="tel" id="footer-phone"
+                                autocomplete="tel" />
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 uppercase mb-2 tracking-wide">Email
                                 Address</label>
                             <input
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg"
-                                name="email" placeholder="john@example.com" required="" type="email" />
+                                name="email" placeholder="john@example.com" required="" type="email"
+                                autocomplete="email" />
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 uppercase mb-2 tracking-wide">Project
                                 Details</label>
                             <textarea
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg min-h-[120px]"
-                                name="project_description" placeholder="Tell us about your project..." required=""></textarea>
+                                name="project_description" placeholder="Tell us about your project..."
+                                required=""></textarea>
                         </div>
                         <div class="flex items-start gap-3 py-2">
                             <input type="checkbox" id="footer-terms" required
