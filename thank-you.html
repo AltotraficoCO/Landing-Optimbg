@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-52S74TH2');</script>
+    <!-- End Google Tag Manager -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Thank You - Optim Build Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        :root {
+            --navy: #16213e;
+            --blue: #1e2d54;
+        }
+
+        body,
+        html {
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .main-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-split {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .content-split {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+            }
+
+            body,
+            html {
+                overflow: auto;
+                height: auto;
+            }
+        }
+
+        .confirmation-panel {
+            width: 40%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            z-index: 20;
+            box-shadow: 20px 0 50px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 1024px) {
+            .confirmation-panel {
+                width: 100%;
+                padding: 2rem;
+                text-align: center;
+            }
+        }
+
+        .carousel-panel {
+            width: 60%;
+            background: var(--navy);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .carousel-panel {
+                width: 100%;
+                height: 500px;
+            }
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(22, 33, 62, 0.9), transparent);
+            padding: 4rem 3rem 3rem;
+            color: white;
+        }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .animated-check {
+            animation: pulse-check 2s infinite;
+        }
+
+        @keyframes pulse-check {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        .custom-prev,
+        .custom-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .custom-prev:hover,
+        .custom-next:hover {
+            background: var(--navy);
+            color: white;
+        }
+
+        .custom-prev {
+            left: 40px;
+        }
+
+        .custom-next {
+            right: 40px;
+        }
+
+        .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.5) !important;
+            width: 12px !important;
+            height: 12px !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: white !important;
+            width: 30px !important;
+            border-radius: 6px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-52S74TH2" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="main-container">
+        <!-- Compact Header -->
+        <header class="bg-white py-2 border-b border-gray-100 flex-shrink-0">
+            <div class="max-w-7xl mx-auto px-6 flex justify-end items-center">
+                <div class="flex items-center gap-6">
+                    <a href="https://www.instagram.com/optim.buildgroup" target="_blank"
+                        class="text-navy hover:text-blue-600 transition-colors"><i
+                            class="fab fa-instagram text-2xl"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61559981881515" target="_blank"
+                        class="text-navy hover:text-blue-600 transition-colors"><i
+                            class="fab fa-facebook text-2xl"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-split">
+            <!-- Confirmation Panel -->
+            <div class="confirmation-panel">
+                <div
+                    class="size-20 bg-green-500 rounded-full flex items-center justify-center mb-8 animated-check mx-auto lg:mx-0">
+                    <span class="material-symbols-outlined text-white text-5xl">check</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-navy mb-4 tracking-tight leading-tight">
+                    Thank You! <br><span class="text-blue-900">Request Sent.</span>
+                </h1>
+                <p class="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
+                    We've received your details. An Optim Build Group specialist will call you within <span
+                        class="text-navy font-bold">24 hours</span> to discuss your project.
+                </p>
+
+                <div class="space-y-4">
+                    <a href="tel:8134001617"
+                        class="flex items-center justify-center gap-4 bg-navy text-white px-8 py-5 rounded-2xl text-xl font-black shadow-xl hover:bg-blue-900 transition-all w-full">
+                        <span class="material-symbols-outlined text-3xl">call</span>
+                        CALL 813-400-1617
+                    </a>
+                    <a href="/"
+                        class="flex items-center justify-center gap-4 bg-slate-50 text-navy px-8 py-5 rounded-2xl text-xl font-black hover:bg-slate-100 transition-all w-full">
+                        <span class="material-symbols-outlined">home</span>
+                        Back to Home
+                    </a>
+                </div>
+
+                <div class="mt-auto pt-10 border-t border-slate-100 hidden lg:block">
+                    <p class="text-slate-400 text-sm font-medium">© 2024 Optim Build Group. <br>14902 N Florida Av.
+                        Suite B, Tampa, FL</p>
+                </div>
+            </div>
+
+            <!-- Carousel Panel -->
+            <div class="carousel-panel">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"
+                            style="background-image: url('https://optimbuildgroup.com/wp-content/uploads/2025/01/kitchen-remodeling-after.png')">
+                            <div class="slide-overlay">
+                                <span class="text-white/70 uppercase tracking-widest text-xs font-bold mb-2 block">Our
+                                    Recent Work</span>
+                                <h3 class="text-4xl font-black mb-4">Kitchen Remodeling</h3>
+                                <p class="text-white/80 max-w-md mb-6">Experience the transformation of culinary spaces
+                                    with our premium renovations.</p>
+                                <a href="https://optimbuildgroup.com/projects/" target="_blank"
+                                    class="inline-flex glass-btn px-6 py-3 rounded-lg font-bold text-white items-center gap-2">View
+                                    Project <span class="material-symbols-outlined">arrow_outward</span></a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide"
+                            style="background-image: url('https://optimbuildgroup.com/wp-content/uploads/2025/01/bathroom-remodeling-after.png')">
+                            <div class="slide-overlay">
+                                <span class="text-white/70 uppercase tracking-widest text-xs font-bold mb-2 block">Our
+                                    Recent Work</span>
+                                <h3 class="text-4xl font-black mb-4">Bathroom Spa</h3>
+                                <p class="text-white/80 max-w-md mb-6">Creating oasis-like environments for relaxation
+                                    and functionality.</p>
+                                <a href="https://optimbuildgroup.com/projects/" target="_blank"
+                                    class="inline-flex glass-btn px-6 py-3 rounded-lg font-bold text-white items-center gap-2">View
+                                    Project <span class="material-symbols-outlined">arrow_outward</span></a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide"
+                            style="background-image: url('https://optimbuildgroup.com/wp-content/uploads/2025/02/ROOFING.png')">
+                            <div class="slide-overlay">
+                                <span
+                                    class="text-white/70 uppercase tracking-widest text-xs font-bold mb-2 block">Premium
+                                    Services</span>
+                                <h3 class="text-4xl font-black mb-4">Architectural Roofing</h3>
+                                <p class="text-white/80 max-w-md mb-6">Durable, high-quality roofing systems designed to
+                                    last a lifetime.</p>
+                                <a href="https://optimbuildgroup.com/projects/" target="_blank"
+                                    class="inline-flex glass-btn px-6 py-3 rounded-lg font-bold text-white items-center gap-2">View
+                                    Project <span class="material-symbols-outlined">arrow_outward</span></a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide"
+                            style="background-image: url('https://optimbuildgroup.com/wp-content/uploads/2025/01/exterior-repair.png')">
+                            <div class="slide-overlay">
+                                <span
+                                    class="text-white/70 uppercase tracking-widest text-xs font-bold mb-2 block">Precision
+                                    Built</span>
+                                <h3 class="text-4xl font-black mb-4">Exterior Restoration</h3>
+                                <p class="text-white/80 max-w-md mb-6">Restoring beauty and structural integrity to
+                                    every exterior.</p>
+                                <a href="https://optimbuildgroup.com/projects/" target="_blank"
+                                    class="inline-flex glass-btn px-6 py-3 rounded-lg font-bold text-white items-center gap-2">View
+                                    Project <span class="material-symbols-outlined">arrow_outward</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- High-End Navigation -->
+                    <div class="custom-prev"><span class="material-symbols-outlined">west</span></div>
+                    <div class="custom-next"><span class="material-symbols-outlined">east</span></div>
+
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            loop: true,
+            speed: 1000,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".custom-next",
+                prevEl: ".custom-prev",
+            },
+        });
+    </script>
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

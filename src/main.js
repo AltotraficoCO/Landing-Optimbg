@@ -145,8 +145,8 @@ async function handleFormSubmit(e) {
         const result = (contentType && contentType.includes("application/json")) ? await response.json() : {};
 
         if (response.ok) {
-            showStatus(form, 'Thanks! Your request has been sent successfully.', 'text-green-600');
             form.reset();
+            window.location.href = '/thank-you';
         } else {
             const errorMessage = result.error || 'Server error';
             throw new Error(errorMessage);

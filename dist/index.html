@@ -21,9 +21,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <script src="https://www.google.com/recaptcha/api.js?render=6Lf082AsAAAAAP9jEyiqt0tMDsSQG3z0zGGuiaPL"></script>
-  <script type="module" crossorigin src="/assets/index.19a64e41.js"></script>
-  <link rel="stylesheet" href="/assets/index.2dc9c19f.css">
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcyMmEsAAAAAJgYFByDy9TaBVloslKj-dufEZYV"></script>
+  <script type="module" crossorigin src="/assets/main.6782ac81.js"></script>
+  <link rel="stylesheet" href="/assets/main.f74df0c6.css">
 </head>
 
 <body class="bg-white antialiased">
@@ -98,7 +98,7 @@
                                     Number</label>
                                 <input
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy"
-                                    placeholder="(813) 555-1234" required="" type="tel" />
+                                    placeholder="813 555 1234" required="" type="tel" id="hero-phone" />
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1 tracking-wide">Email
@@ -114,6 +114,15 @@
                                 <textarea
                                     class="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-navy focus:border-navy min-h-[80px]"
                                     placeholder="Tell us about your project..." required=""></textarea>
+                            </div>
+                            <div class="flex items-start gap-3 py-2">
+                                <input type="checkbox" id="hero-terms" required
+                                    class="mt-1 border-slate-300 rounded text-navy focus:ring-navy">
+                                <label for="hero-terms" class="text-sm text-slate-600 leading-tight">
+                                    I agree to the <a href="https://optimbuildgroup.com/terms-conditions/"
+                                        target="_blank" class="text-navy font-bold underline">Terms & Conditions</a> and
+                                    privacy policy.
+                                </label>
                             </div>
                             <button type="submit"
                                 class="w-full bg-navy hover:bg-[#1e2d54] text-white font-black py-5 rounded-xl transition-all shadow-lg text-xl uppercase tracking-widest mt-4 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -255,7 +264,7 @@
                                 Number</label>
                             <input
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg"
-                                placeholder="04XX XXX XXX" required="" type="tel" />
+                                placeholder="813 555 1234" required="" type="tel" id="footer-phone" />
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 uppercase mb-2 tracking-wide">Email
@@ -270,6 +279,14 @@
                             <textarea
                                 class="w-full bg-slate-50 border-slate-200 rounded-xl px-5 py-4 focus:ring-navy focus:border-navy text-lg min-h-[120px]"
                                 placeholder="Tell us about your project..." required=""></textarea>
+                        </div>
+                        <div class="flex items-start gap-3 py-2">
+                            <input type="checkbox" id="footer-terms" required
+                                class="mt-1 border-slate-300 rounded text-navy focus:ring-navy">
+                            <label for="footer-terms" class="text-sm text-slate-600 leading-tight">
+                                I agree to the <a href="https://optimbuildgroup.com/terms-conditions/" target="_blank"
+                                    class="text-navy font-bold underline">Terms & Conditions</a> and privacy policy.
+                            </label>
                         </div>
                         <button type="submit"
                             class="w-full bg-navy hover:bg-[#1e2d54] text-white font-black py-5 rounded-xl transition-all shadow-lg text-xl uppercase tracking-widest mt-4 disabled:opacity-50 disabled:cursor-not-allowed">
