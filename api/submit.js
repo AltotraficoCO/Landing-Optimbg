@@ -25,19 +25,23 @@ export default async function handler(req, res) {
         return res.status(405).json({ success: false, error: 'Method Not Allowed' });
     }
 
-    // 2. Origin/Referer verification (Basic CORS protection for serverless)
+    // 2. Origin/Referer verification
     const allowedOrigins = [
         'https://landing-optimbg.vercel.app',
         'https://optimbuildgroup.com',
         'http://localhost:5173',
         'http://localhost:3000'
     ];
-    const origin = req.headers.origin || req.headers.referer;
-    const isAllowed = origin && allowedOrigins.some(ao => origin.startsWith(ao));
+    const origin = req.headers.origin || req.headers.referer || '';
 
-    if (!isAllowed) {
+    // Improved origin check: Allow official domains, localhost, and Vercel preview domains
+    const isAllowed = allowedOrigins.some(ao => origin.startsWith(ao)) ||
+        origin.endsWith('.vercel.app') ||
+        process.env.NODE_ENV === 'development';
+
+    if (!isAllowed && origin) {
         console.warn('Security Warning: Blocked request from unauthorized origin:', origin);
-        return res.status(403).json({ success: false, error: 'Unauthorized request' });
+        return res.status(403).json({ success: false, error: 'Unauthorized origin: ' + origin });
     }
 
     // 3. Honeypot check (Bot detection)

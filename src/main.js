@@ -159,7 +159,7 @@ async function handleFormSubmit(e) {
         } else if (error.message === 'reCAPTCHA not loaded') {
             showStatus(form, 'Security verification failed. Please refresh and try again.', 'text-red-600');
         } else {
-            showStatus(form, 'Something went wrong. Please try again or call us directly.', 'text-red-600');
+            showStatus(form, error.message || 'Something went wrong. Please try again or call us directly.', 'text-red-600');
         }
         console.error('Submission Error:', error);
     } finally {
