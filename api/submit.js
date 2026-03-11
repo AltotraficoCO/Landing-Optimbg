@@ -54,9 +54,10 @@ export default async function handler(req, res) {
 
     // 4. Configuration validation
     const API_KEY = process.env.RECAPTCHA_API_KEY?.trim();
-    const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
+    const WEBHOOK_URL = process.env.ALTOTRAFICO_WEBHOOK_URL;
+    const WEBHOOK_API_KEY = process.env.ALTOTRAFICO_API_KEY;
 
-    if (!API_KEY || !N8N_WEBHOOK_URL) {
+    if (!API_KEY || !WEBHOOK_URL) {
         console.error('Config Error: Missing environment variables');
         return res.status(500).json({ success: false, error: 'Service temporarily unavailable' });
     }
@@ -70,6 +71,7 @@ export default async function handler(req, res) {
     const email = sanitize(rawData.email, 100);
     const phone = (rawData.phone || '').replace(/\D/g, '').slice(0, 15);
     const project_description = sanitize(rawData.project_description, 2000);
+    const service_needed = sanitize(rawData.service_needed, 100);
 
     if (!name || name.length < 2) {
         return res.status(400).json({ success: false, error: 'A valid name is required' });
@@ -111,12 +113,20 @@ export default async function handler(req, res) {
             return res.status(403).json({ success: false, error: 'Security verification failed' });
         }
 
-        // 7. Forward sanitized data to n8n
-        await axios.post(N8N_WEBHOOK_URL, {
+        // 7. Forward sanitized data to Altotrafico webhook
+        const webhookHeaders = {
+            'Content-Type': 'application/json',
+        };
+        if (WEBHOOK_API_KEY) {
+            webhookHeaders['x-api-key'] = WEBHOOK_API_KEY;
+        }
+
+        await axios.post(WEBHOOK_URL, {
             name,
             email,
             phone,
             project_description,
+            service_needed,
             utm_source: sanitize(rawData.utm_source, 100),
             utm_medium: sanitize(rawData.utm_medium, 100),
             utm_campaign: sanitize(rawData.utm_campaign, 100),
@@ -124,6 +134,8 @@ export default async function handler(req, res) {
             utm_content: sanitize(rawData.utm_content, 100),
             timestamp: new Date().toISOString(),
             security_score: score
+        }, {
+            headers: webhookHeaders
         });
 
         return res.status(200).json({ success: true, message: 'Form submitted successfully' });

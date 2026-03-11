@@ -7,7 +7,7 @@
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
-    /* Animation Utility Classes */
+    /* Fade in from bottom (default) */
     .fade-in-section {
         opacity: 0;
         transform: translateY(20px);
@@ -20,8 +20,46 @@
         transform: none;
     }
 
-    @keyframes bounce-subtle {
+    /* Slide in from left */
+    .slide-in-left {
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        will-change: opacity, transform;
+    }
 
+    .slide-in-left.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Slide in from right */
+    .slide-in-right {
+        opacity: 0;
+        transform: translateX(30px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .slide-in-right.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Scale in for cards */
+    .scale-in {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        will-change: opacity, transform;
+    }
+
+    .scale-in.is-visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    @keyframes bounce-subtle {
         0%,
         100% {
             transform: translateY(0);

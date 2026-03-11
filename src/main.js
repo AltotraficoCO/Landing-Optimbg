@@ -21,9 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    const sections = document.querySelectorAll('.fade-in-section');
-    sections.forEach(section => {
-        observer.observe(section);
+    // Observe all animated elements
+    const animatedElements = document.querySelectorAll('.fade-in-section, .slide-in-left, .slide-in-right, .scale-in');
+    animatedElements.forEach(el => {
+        observer.observe(el);
     });
 
     // Form Handler - Select all forms with the class
@@ -31,6 +32,31 @@ document.addEventListener('DOMContentLoaded', () => {
     forms.forEach(form => {
         form.addEventListener('submit', handleFormSubmit);
     });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Header shadow on scroll
+    const header = document.getElementById('site-header');
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.remove('shadow-md');
+                header.classList.add('shadow-sm');
+            }
+        }, { passive: true });
+    }
 });
 
 /**
@@ -114,11 +140,13 @@ async function handleFormSubmit(e) {
         const recaptchaToken = await executeRecaptcha();
 
         // 3. Collect Data & UTMs
+        const serviceSelect = form.querySelector('select[name="service_needed"]');
         const formData = {
             name: name,
             phone: cleanPhone,
             email: email,
             project_description: form.querySelector('textarea')?.value?.trim() || 'Not provided',
+            service_needed: serviceSelect ? serviceSelect.value : '',
             b_phone: form.querySelector('input[name="b_phone"]')?.value || '', // Honeypot
             terms_accepted: true,
             recaptcha_response: recaptchaToken,
