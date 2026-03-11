@@ -33,6 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', handleFormSubmit);
     });
 
+    // Phone mask: auto-format as (XXX) XXX-XXXX
+    document.querySelectorAll('.js-phone-mask').forEach(input => {
+        input.addEventListener('input', (e) => {
+            let digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+            let formatted = '';
+            if (digits.length > 0) formatted = '(' + digits.slice(0, 3);
+            if (digits.length >= 3) formatted += ') ' + digits.slice(3, 6);
+            if (digits.length >= 6) formatted += '-' + digits.slice(6);
+            e.target.value = formatted;
+        });
+    });
+
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
