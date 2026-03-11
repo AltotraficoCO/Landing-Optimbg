@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     // 4. Configuration validation
     const API_KEY = process.env.RECAPTCHA_API_KEY?.trim();
-    const WEBHOOK_URL = process.env.ALTOTRAFICO_WEBHOOK_URL;
+    const WEBHOOK_URL = 'https://app.altotrafico.co/api/webhook/c/cb37efa4-6088-47a8-a3c4-91aa733a495d';
     const WEBHOOK_API_KEY = process.env.ALTOTRAFICO_API_KEY;
 
     if (!API_KEY || !WEBHOOK_URL) {
