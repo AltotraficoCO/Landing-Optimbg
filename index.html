@@ -585,26 +585,18 @@
     <script type="module" src="/src/main.js"></script>
 
     <script>
-      // CRO: Pre-select service when clicking service cards
+      // CRO: Service pre-selection and project overlays
       document.addEventListener('DOMContentLoaded', function() {
-        var serviceMap = {
-          'HVAC': 'HVAC Repair &amp; Installation',
-          'Roofing': 'Roofing',
-          'Dampness': 'Dampness &amp; Humidity Control',
-          'General': 'General Home Repairs'
-        };
-        
         // Service card pre-selection
         document.querySelectorAll('a[href="#hero-contact-form"]').forEach(function(link) {
           var heading = link.querySelector('h3');
           if (!heading) return;
           var text = heading.textContent.trim();
           var serviceKey = '';
-          if (text.includes('HVAC')) serviceKey = 'HVAC';
-          else if (text.includes('Roofing')) serviceKey = 'Roofing';
-          else if (text.includes('Dampness')) serviceKey = 'Dampness';
-          else if (text.includes('Maintenance')) serviceKey = 'General Repairs';
-          
+          if (text.indexOf('HVAC') >= 0) serviceKey = 'HVAC';
+          else if (text.indexOf('Roofing') >= 0) serviceKey = 'Roofing';
+          else if (text.indexOf('Dampness') >= 0) serviceKey = 'Dampness';
+          else if (text.indexOf('Maintenance') >= 0) serviceKey = 'General Repairs';
           if (serviceKey) {
             link.addEventListener('click', function() {
               setTimeout(function() {
@@ -615,17 +607,18 @@
             });
           }
         });
-        
-        // Project image overlays
+        // Project image hover overlays
         document.querySelectorAll('.project-wrapper').forEach(function(wrapper) {
-          var overlay = wrapper.querySelector('.project-overlay');
-          if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'project-overlay';
-            overlay.innerHTML = '<a href="#hero-contact-form" style="color:white;font-weight:800;font-size:1rem;text-decoration:none;text-align:center;padding:0 20px;line-height:1.4;">Want similar results?<br><span style=\'font-size:1.1rem;\'>Get a Free Quote →</span></a>';
-            wrapper.style.position = 'relative';
-            wrapper.appendChild(overlay);
-          }
+          if (wrapper.querySelector('.project-overlay')) return;
+          var overlay = document.createElement('div');
+          overlay.className = 'project-overlay';
+          var link = document.createElement('a');
+          link.href = '#hero-contact-form';
+          link.style.cssText = 'color:white;font-weight:800;font-size:1rem;text-decoration:none;text-align:center;padding:0 20px;line-height:1.4;';
+          link.innerHTML = 'Want similar results?<br><span style="font-size:1.1rem;">Get a Free Quote →</span>';
+          overlay.appendChild(link);
+          wrapper.style.position = 'relative';
+          wrapper.appendChild(overlay);
         });
       });
     </script>
